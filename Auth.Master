@@ -1,0 +1,61 @@
+<%@ Master Language="C#" AutoEventWireup="true"
+    CodeBehind="Auth.Master.cs"
+    Inherits="CyberArenaWebForms5.AuthMaster" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>
+        <asp:ContentPlaceHolder ID="TitleContent" runat="server">CyberArena</asp:ContentPlaceHolder>
+    </title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link href="Content/Site.css" rel="stylesheet" />
+</head>
+
+<body class="auth-body">
+<form id="form1" runat="server">
+
+    <div class="auth-shell">
+
+        <aside class="auth-side">
+            <div class="brand">
+                <span class="brand-mark">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round">
+                        <path d="M12 2.5 20 6v6c0 4.7-3.2 8.2-8 9.5C7.2 20.2 4 16.7 4 12V6l8-3.5Z" />
+                        <path d="M12 8v6" /><circle cx="12" cy="16.6" r=".4" />
+                    </svg>
+                </span>
+                <strong>CyberArena</strong>
+            </div>
+
+            <div class="auth-hero">
+                <h2>Train. Compete.<br />Capture the flag.</h2>
+                <p>A hands-on cybersecurity competition platform. Solve challenges, join a team and climb the global leaderboard.</p>
+
+                <ul class="auth-points">
+                    <li><span class="auth-tick"></span> Challenges in web, crypto, forensics, OSINT and more</li>
+                    <li><span class="auth-tick"></span> Live scoreboard and team rankings</li>
+                    <li><span class="auth-tick"></span> Moderated, audited and fair competitions</li>
+                </ul>
+            </div>
+
+            <div class="auth-foot"> © CyberArena , Demo environment</div>
+        </aside>
+
+        <main class="auth-main">
+            <div class="auth-card">
+                <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+            </div>
+        </main>
+
+    </div>
+
+</form>
+</body>
+</html>
