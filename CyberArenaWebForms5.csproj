@@ -251,9 +251,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ERROR_FIX_SUMMARY.md" />
     <None Include="packages.config" />
     <Content Include="VALIDATION_ANALYSIS.md" />
     <Content Include="TABLE_INVENTORY.md" />
+    <Content Include="QUICKSTART.md" />
+    <Content Include="README_FINAL.md" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
