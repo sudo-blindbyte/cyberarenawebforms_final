@@ -72,6 +72,7 @@
     <Content Include="App_Data\CreateDatabase_Full.sql" />
     <Content Include="App_Data\CreateDatabase_Manual.sql" />
     <Content Include="App_Data\SetupDatabase.sql" />
+    <Content Include="DatabaseCheck.aspx" />
     <Content Include="DatabaseDiagnostics.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
@@ -99,6 +100,13 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DatabaseCheck.aspx.cs">
+      <DependentUpon>DatabaseCheck.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DatabaseCheck.aspx.designer.cs">
+      <DependentUpon>DatabaseCheck.aspx</DependentUpon>
+    </Compile>
     <Compile Include="DatabaseDiagnostics.aspx.cs">
       <DependentUpon>DatabaseDiagnostics.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -267,6 +275,10 @@
     <Content Include="FINAL_SUMMARY.md" />
     <Content Include="COMPLETE_SETUP_SUMMARY.md" />
     <Content Include="ACCOUNT_CREATION_FIX.md" />
+    <Content Include="DATABASE_CONNECTION_GUIDE.md" />
+    <Content Include="COMPLETE_DATABASE_GUIDE.md" />
+    <Content Include="DATABASE_STATUS_VERIFIED.md" />
+    <Content Include="DATABASE_COMPLETE_STATUS.md" />
     <None Include="packages.config" />
     <Content Include="VALIDATION_ANALYSIS.md" />
     <Content Include="TABLE_INVENTORY.md" />
@@ -280,6 +292,8 @@
     <Content Include="REGISTRATION_FIX_COMPLETE.md" />
     <Content Include="VISUAL_SUMMARY.md" />
     <Content Include="REGISTRATION_COMPLETE_GUIDE.md" />
+    <Content Include="QUICK_START_GUIDE.md" />
+    <Content Include="TROUBLESHOOT_TABLE_DATA.md" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
