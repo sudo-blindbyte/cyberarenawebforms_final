@@ -354,5 +354,39 @@ namespace CyberArenaWebForms5.Models
                 new SqlParameter("@email", email),
                 new SqlParameter("@id", id));
         }
+
+        // Alias for FindByIdentifier - used by forgot password functionality
+        public static AppUser FindByEmailOrUsername(string emailOrUsername)
+        {
+            return FindByIdentifier(emailOrUsername);
+        }
+
+        public static bool UpdatePassword(int id, string newPassword)
+        {
+            if (string.IsNullOrWhiteSpace(newPassword) || newPassword.Length < 6)
+            {
+                return false;
+            }
+
+            try
+            {
+                // Generate new salt and hash
+                string salt = NewSalt();
+                string hash = HashPassword(newPassword, salt);
+
+                // Update the user's password
+                DatabaseHelper.ExecuteCommand(
+                    "UPDATE dbo.AppUser SET Salt = @salt, Hash = @hash WHERE Id = @id",
+                    new SqlParameter("@salt", salt),
+                    new SqlParameter("@hash", hash),
+                    new SqlParameter("@id", id));
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

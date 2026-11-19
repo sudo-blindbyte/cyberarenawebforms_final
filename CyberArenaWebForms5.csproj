@@ -75,6 +75,7 @@
     <Content Include="DatabaseCheck.aspx" />
     <Content Include="DatabaseDiagnostics.aspx" />
     <Content Include="Default.aspx" />
+    <Content Include="ForgotPassword.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Login.aspx" />
     <Content Include="Register.aspx" />
@@ -120,6 +121,13 @@
     </Compile>
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ForgotPassword.aspx.cs">
+      <DependentUpon>ForgotPassword.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ForgotPassword.aspx.designer.cs">
+      <DependentUpon>ForgotPassword.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -271,7 +279,6 @@
     <Content Include="ERROR_FIX_SUMMARY.md" />
     <Content Include="DATABASE_SETUP_COMPLETE.md" />
     <Content Include="DATABASE_DIAGNOSTICS_README.md" />
-    <Content Include="CRUD_OPERATIONS_COMPLETE.md" />
     <Content Include="FINAL_SUMMARY.md" />
     <Content Include="COMPLETE_SETUP_SUMMARY.md" />
     <Content Include="ACCOUNT_CREATION_FIX.md" />

@@ -11,6 +11,10 @@ namespace CyberArenaWebForms5
             {
                 ShowMessage("Account created. Please sign in.", "success");
             }
+            if (!IsPostBack && Request.QueryString["reset"] == "1")
+            {
+                ShowMessage("Password reset successfully. Please sign in with your new password.", "success");
+            }
         }
 
         protected void btnLogin_Click(object sender, EventArgs e)

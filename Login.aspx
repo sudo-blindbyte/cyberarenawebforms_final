@@ -25,8 +25,12 @@
 
         <div class="field-group" style="margin-top:14px;">
             <label for="<%= txtPassword.ClientID %>">Password</label>
-            <asp:TextBox ID="txtPassword" runat="server" CssClass="team-input"
-                TextMode="Password" MaxLength="100" placeholder="########" autocomplete="current-password" />
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <asp:TextBox ID="txtPassword" runat="server" CssClass="team-input"
+                    TextMode="Password" MaxLength="100" placeholder="########" autocomplete="current-password"
+                    style="flex: 1; margin-right: 10px;" />
+                <a href="ForgotPassword.aspx" style="font-size: 12px; white-space: nowrap;">Forgot?</a>
+            </div>
         </div>
 
         <asp:Button ID="btnLogin" runat="server" Text="Sign in"

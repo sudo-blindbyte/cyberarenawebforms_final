@@ -29,6 +29,19 @@ namespace CyberArenaWebForms5
             Response.Redirect("~/Login.aspx", true);
         }
 
+        protected void btnSearch_Click(object sender, EventArgs e)
+        {
+            // For now, just navigate to Challenges page for search functionality
+            Response.Redirect("~/Challenges.aspx", false);
+        }
+
+        protected void btnNotifications_Click(object sender, EventArgs e)
+        {
+            // Navigate to a notifications page if it exists, otherwise show an alert
+            // For now, just refresh the current page
+            Response.Redirect(Request.RawUrl, false);
+        }
+
         /// <summary>
         /// Returns "active" when the current page matches one of the given
         /// file names. Used to highlight the sidebar navigation item.
