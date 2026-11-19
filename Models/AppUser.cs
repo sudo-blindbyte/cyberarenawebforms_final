@@ -17,6 +17,7 @@ namespace CyberArenaWebForms5.Models
         public string Role { get; set; }        // Player | Moderator | Admin
         public string Status { get; set; }      // Active | Suspended
         public string Team { get; set; }
+        public int? TeamId { get; set; }
         public int Points { get; set; }
         public int Solved { get; set; }
         public DateTime Joined { get; set; }
@@ -119,7 +120,7 @@ namespace CyberArenaWebForms5.Models
         public static List<AppUser> All()
         {
             DataTable dt = DatabaseHelper.ExecuteQuery(
-                "SELECT Id, Username, FullName, Email, Role, Status, Team, Points, Solved, Joined, LastActive, Salt, Hash " +
+                "SELECT Id, Username, FullName, Email, Role, Status, Team, TeamId, Points, Solved, Joined, LastActive, Salt, Hash " +
                 "FROM dbo.AppUser ORDER BY Id");
 
             var users = new List<AppUser>();
@@ -133,7 +134,7 @@ namespace CyberArenaWebForms5.Models
         public static AppUser FindById(int id)
         {
             DataTable dt = DatabaseHelper.ExecuteQuery(
-                "SELECT Id, Username, FullName, Email, Role, Status, Team, Points, Solved, Joined, LastActive, Salt, Hash " +
+                "SELECT Id, Username, FullName, Email, Role, Status, Team, TeamId, Points, Solved, Joined, LastActive, Salt, Hash " +
                 "FROM dbo.AppUser WHERE Id = " + id);
 
             if (dt.Rows.Count == 0) return null;
@@ -146,7 +147,7 @@ namespace CyberArenaWebForms5.Models
 
             var param = new SqlParameter("@identifier", identifier);
             DataTable dt = DatabaseHelper.ExecuteQuery(
-                "SELECT Id, Username, FullName, Email, Role, Status, Team, Points, Solved, Joined, LastActive, Salt, Hash " +
+                "SELECT Id, Username, FullName, Email, Role, Status, Team, TeamId, Points, Solved, Joined, LastActive, Salt, Hash " +
                 "FROM dbo.AppUser WHERE Username = @identifier OR Email = @identifier", param);
 
             if (dt.Rows.Count == 0) return null;
@@ -164,6 +165,7 @@ namespace CyberArenaWebForms5.Models
                 Role = row["Role"].ToString(),
                 Status = row["Status"].ToString(),
                 Team = row["Team"]?.ToString(),
+                TeamId = row["TeamId"] == DBNull.Value ? (int?)null : (int)row["TeamId"],
                 Points = (int)row["Points"],
                 Solved = (int)row["Solved"],
                 Joined = (DateTime)row["Joined"],
@@ -255,18 +257,47 @@ namespace CyberArenaWebForms5.Models
             string salt = NewSalt();
             string hash = HashPassword(password, salt);
 
-            int userId = (int)DatabaseHelper.ExecuteScalar(
-                "INSERT INTO dbo.AppUser (Username, FullName, Email, Role, Status, Team, Points, Solved, Joined, LastActive, Salt, Hash) " +
-                "VALUES (@username, @fullName, @email, @role, 'Active', 'None', 0, 0, GETUTCDATE(), GETUTCDATE(), @salt, @hash); " +
-                "SELECT SCOPE_IDENTITY();",
-                new SqlParameter("@username", username),
-                new SqlParameter("@fullName", fullName ?? (object)DBNull.Value),
-                new SqlParameter("@email", email),
-                new SqlParameter("@role", role),
-                new SqlParameter("@salt", salt),
-                new SqlParameter("@hash", hash));
+            try
+            {
+                object result = DatabaseHelper.ExecuteScalar(
+                    "INSERT INTO dbo.AppUser (Username, FullName, Email, Role, Status, Team, Points, Solved, Joined, LastActive, Salt, Hash) " +
+                    "VALUES (@username, @fullName, @email, @role, 'Active', 'None', 0, 0, GETUTCDATE(), GETUTCDATE(), @salt, @hash); " +
+                    "SELECT SCOPE_IDENTITY();",
+                    new SqlParameter("@username", username),
+                    new SqlParameter("@fullName", fullName ?? (object)DBNull.Value),
+                    new SqlParameter("@email", email),
+                    new SqlParameter("@role", role),
+                    new SqlParameter("@salt", salt),
+                    new SqlParameter("@hash", hash));
 
-            return FindById((int)userId);
+                // SCOPE_IDENTITY() returns a Decimal, need to convert properly
+                if (result == null || result == DBNull.Value)
+                {
+                    throw new InvalidOperationException("Failed to retrieve new user ID.");
+                }
+
+                int userId = Convert.ToInt32(result);
+                AppUser newUser = FindById(userId);
+
+                if (newUser == null)
+                {
+                    throw new InvalidOperationException("User was created but could not be retrieved from database.");
+                }
+
+                return newUser;
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Number == 2627) // Unique constraint violation
+                {
+                    throw new InvalidOperationException("Username or email already exists.", ex);
+                }
+                throw new InvalidOperationException("Database error: " + ex.Message, ex);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Failed to create user account: " + ex.Message, ex);
+            }
         }
 
         public static int AdminCount()

@@ -61,7 +61,7 @@ CREATE TABLE dbo.AppUser (
 CREATE INDEX IX_AppUser_Username ON dbo.AppUser(Username);
 CREATE INDEX IX_AppUser_Email ON dbo.AppUser(Email);
 CREATE INDEX IX_AppUser_Status ON dbo.AppUser(Status);
-CREATE INDEX IX_AppUser_Points ON dbo.AppUser(Points) DESC;
+CREATE INDEX IX_AppUser_Points ON dbo.AppUser(Points DESC);
 CREATE INDEX IX_AppUser_Rank ON dbo.AppUser(Rank);
 CREATE INDEX IX_AppUser_TeamId ON dbo.AppUser(TeamId);
 

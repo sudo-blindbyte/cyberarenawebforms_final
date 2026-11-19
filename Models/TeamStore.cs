@@ -123,15 +123,32 @@ namespace CyberArenaWebForms5.Models
         // ---------- management ----------
         public static Team Create(string name, string description, int maxMembers = 5)
         {
-            int teamId = (int)DatabaseHelper.ExecuteScalar(
-                "INSERT INTO dbo.Team (Name, Description, MaxMembers, CurrentMembers, TotalPoints, Status) " +
-                "VALUES (@name, @description, @maxMembers, 0, 0, 'Open'); " +
-                "SELECT SCOPE_IDENTITY();",
-                new SqlParameter("@name", name),
-                new SqlParameter("@description", description ?? (object)DBNull.Value),
-                new SqlParameter("@maxMembers", maxMembers));
+            try
+            {
+                object result = DatabaseHelper.ExecuteScalar(
+                    "INSERT INTO dbo.Team (Name, Description, MaxMembers, CurrentMembers, TotalPoints, Status) " +
+                    "VALUES (@name, @description, @maxMembers, 0, 0, 'Open'); " +
+                    "SELECT SCOPE_IDENTITY();",
+                    new SqlParameter("@name", name),
+                    new SqlParameter("@description", description ?? (object)DBNull.Value),
+                    new SqlParameter("@maxMembers", maxMembers));
 
-            return FindById((int)teamId);
+                if (result == null || result == DBNull.Value)
+                {
+                    throw new Exception("Failed to create team: no ID returned");
+                }
+
+                int teamId = Convert.ToInt32(result);
+                return FindById(teamId);
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception($"Database error creating team: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error creating team: {ex.Message}", ex);
+            }
         }
 
         public static bool Update(int id, string name, string description, int maxMembers)

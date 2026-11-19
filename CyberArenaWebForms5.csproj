@@ -71,6 +71,8 @@
     <Content Include="App_Data\CreateDatabase_Complete.sql" />
     <Content Include="App_Data\CreateDatabase_Full.sql" />
     <Content Include="App_Data\CreateDatabase_Manual.sql" />
+    <Content Include="App_Data\SetupDatabase.sql" />
+    <Content Include="DatabaseDiagnostics.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Login.aspx" />
@@ -97,6 +99,13 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DatabaseDiagnostics.aspx.cs">
+      <DependentUpon>DatabaseDiagnostics.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DatabaseDiagnostics.aspx.designer.cs">
+      <DependentUpon>DatabaseDiagnostics.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -252,11 +261,25 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ERROR_FIX_SUMMARY.md" />
+    <Content Include="DATABASE_SETUP_COMPLETE.md" />
+    <Content Include="DATABASE_DIAGNOSTICS_README.md" />
+    <Content Include="CRUD_OPERATIONS_COMPLETE.md" />
+    <Content Include="FINAL_SUMMARY.md" />
+    <Content Include="COMPLETE_SETUP_SUMMARY.md" />
+    <Content Include="ACCOUNT_CREATION_FIX.md" />
     <None Include="packages.config" />
     <Content Include="VALIDATION_ANALYSIS.md" />
     <Content Include="TABLE_INVENTORY.md" />
     <Content Include="QUICKSTART.md" />
     <Content Include="README_FINAL.md" />
+    <Content Include="setup_database.ps1" />
+    <Content Include="QUICK_START.md" />
+    <Content Include="README_DOCUMENTATION_INDEX.md" />
+    <Content Include="SETUP_VERIFICATION_CHECKLIST.md" />
+    <Content Include="QUICK_FIX_GUIDE.md" />
+    <Content Include="REGISTRATION_FIX_COMPLETE.md" />
+    <Content Include="VISUAL_SUMMARY.md" />
+    <Content Include="REGISTRATION_COMPLETE_GUIDE.md" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1,9 +1,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CyberArenaWebForms5.Models;
 
 namespace CyberArenaWebForms5
 {
@@ -25,41 +27,42 @@ namespace CyberArenaWebForms5
             }
         }
 
-        private List<TeamInfo> GetSampleTeams()
+        private List<TeamInfo> GetTeamsFromDatabase()
         {
-            return new List<TeamInfo>
+            try
             {
-                new TeamInfo {
-                    Id = 1, Name = "RootAccess", Initials = "RA",
-                    Description = "Security researchers focused on web exploitation and forensics.",
-                    MemberCount = 4, Points = 3300, Status = "Open"
-                },
-                new TeamInfo {
-                    Id = 2, Name = "ZeroDay", Initials = "ZD",
-                    Description = "A collaborative team solving challenging security puzzles.",
-                    MemberCount = 3, Points = 2725, Status = "Open"
-                },
-                new TeamInfo {
-                    Id = 3, Name = "BinaryOps", Initials = "BO",
-                    Description = "Reverse engineering, binary analysis and low-level security.",
-                    MemberCount = 5, Points = 2175, Status = "Full"
-                },
-                new TeamInfo {
-                    Id = 4, Name = "NullCrew", Initials = "NC",
-                    Description = "Learning cybersecurity through hands-on CTF challenges.",
-                    MemberCount = 2, Points = 1420, Status = "Open"
-                },
-                new TeamInfo {
-                    Id = 5, Name = "PacketStorm", Initials = "PS",
-                    Description = "Network analysis, traffic investigation and protocol research.",
-                    MemberCount = 5, Points = 1200, Status = "Full"
-                },
-                new TeamInfo {
-                    Id = 6, Name = "CipherLab", Initials = "CL",
-                    Description = "Cryptography enthusiasts working through complex ciphers.",
-                    MemberCount = 1, Points = 650, Status = "Open"
+                // Get all teams from database
+                List<Team> dbTeams = TeamStore.All();
+
+                var teamsList = new List<TeamInfo>();
+                foreach (var team in dbTeams)
+                {
+                    teamsList.Add(new TeamInfo
+                    {
+                        Id = team.Id,
+                        Name = team.Name,
+                        Initials = GetInitials(team.Name),
+                        Description = team.Description,
+                        MemberCount = team.CurrentMembers,
+                        Points = team.TotalPoints,
+                        Status = team.Status
+                    });
                 }
-            };
+
+                return teamsList;
+            }
+            catch (Exception ex)
+            {
+                lblPageMessage.Text = "Error loading teams: " + ex.Message;
+                return new List<TeamInfo>();
+            }
+        }
+
+        private string GetInitials(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return "?";
+            string[] words = name.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            return string.Concat(words.Select(w => w[0])).ToUpper();
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -72,18 +75,18 @@ namespace CyberArenaWebForms5
 
         private void BindTeams()
         {
-            IEnumerable<TeamInfo> teams = GetSampleTeams();
+            List<TeamInfo> teams = GetTeamsFromDatabase();
 
             if (ddlTeamFilter.SelectedValue == "open")
             {
-                teams = teams.Where(t => t.Status == "Open");
+                teams = teams.Where(t => t.Status == "Open").ToList();
             }
             else if (ddlTeamFilter.SelectedValue == "full")
             {
-                teams = teams.Where(t => t.Status == "Full");
+                teams = teams.Where(t => t.Status == "Full").ToList();
             }
 
-            rptTeams.DataSource = teams.ToList();
+            rptTeams.DataSource = teams;
             rptTeams.DataBind();
         }
 
@@ -97,6 +100,8 @@ namespace CyberArenaWebForms5
         {
             pnlCreateTeam.Visible = true;
             lblCreateMessage.Text = "";
+            txtTeamName.Text = "";
+            txtTeamDescription.Text = "";
         }
 
         protected void btnCancelCreate_Click(object sender, EventArgs e)
@@ -110,6 +115,7 @@ namespace CyberArenaWebForms5
             string name = txtTeamName.Text.Trim();
             string description = txtTeamDescription.Text.Trim();
 
+            // Validation
             if (string.IsNullOrWhiteSpace(name))
             {
                 lblCreateMessage.Text = "Please enter a team name.";
@@ -118,22 +124,70 @@ namespace CyberArenaWebForms5
 
             if (name.Length < 3)
             {
-                lblCreateMessage.Text =
-                    "Team name must contain at least 3 characters.";
+                lblCreateMessage.Text = "Team name must contain at least 3 characters.";
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(description))
             {
-                lblCreateMessage.Text =
-                    "Please enter a team description.";
+                lblCreateMessage.Text = "Please enter a team description.";
                 return;
             }
 
-            // Temporary demonstration only.
-            // Save the team to SQL Server in a later step.
-            lblCreateMessage.Text =
-                "Validation successful. Database saving will be implemented later.";
+            try
+            {
+                // Check if team name already exists
+                Team existing = TeamStore.FindByName(name);
+                if (existing != null)
+                {
+                    lblCreateMessage.Text = "Team name already taken. Please choose another name.";
+                    return;
+                }
+
+                // Create team in database
+                Team newTeam = TeamStore.Create(name, description, 5);
+
+                if (newTeam != null)
+                {
+                    // Add current user as team leader
+                    if (CurrentUser != null)
+                    {
+                        TeamStore.AddMember(newTeam.Id, CurrentUser.Id);
+
+                        // Log the action
+                        AuditLog.Write(
+                            CurrentUser.Username,
+                            "Created team",
+                            newTeam.Name,
+                            Context);
+                    }
+
+                    lblCreateMessage.Text = "✅ Team created successfully! You are now the team leader.";
+                    pnlCreateTeam.Visible = false;
+
+                    // Refresh teams list
+                    BindTeams();
+                }
+                else
+                {
+                    lblCreateMessage.Text = "Failed to create team. Please try again.";
+                }
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Number == 2627) // Unique constraint violation
+                {
+                    lblCreateMessage.Text = "Team name already exists. Please choose a different name.";
+                }
+                else
+                {
+                    lblCreateMessage.Text = "Database error: " + ex.Message;
+                }
+            }
+            catch (Exception ex)
+            {
+                lblCreateMessage.Text = "Error creating team: " + ex.Message;
+            }
         }
 
         protected void rptTeams_ItemCommand(
@@ -151,25 +205,62 @@ namespace CyberArenaWebForms5
                 return;
             }
 
-            TeamInfo team = GetSampleTeams()
-                .FirstOrDefault(t => t.Id == teamId);
-
-            if (team == null)
+            try
             {
-                lblPageMessage.Text = "Team not found.";
-                return;
-            }
+                // Get team from database
+                Team team = TeamStore.FindById(teamId);
 
-            if (team.Status == "Full")
+                if (team == null)
+                {
+                    lblPageMessage.Text = "Team not found.";
+                    return;
+                }
+
+                if (team.Status == "Full")
+                {
+                    lblPageMessage.Text = "❌ This team is already full.";
+                    return;
+                }
+
+                if (CurrentUser == null)
+                {
+                    lblPageMessage.Text = "You must be logged in to join a team.";
+                    return;
+                }
+
+                // Check if already in a team
+                if (CurrentUser.TeamId.HasValue && CurrentUser.TeamId.Value > 0)
+                {
+                    lblPageMessage.Text = "❌ You are already in a team. Leave your current team first.";
+                    return;
+                }
+
+                // Add user to team
+                bool success = TeamStore.AddMember(teamId, CurrentUser.Id);
+
+                if (success)
+                {
+                    lblPageMessage.Text = "✅ You successfully joined " + Server.HtmlEncode(team.Name) + "!";
+
+                    // Log the action
+                    AuditLog.Write(
+                        CurrentUser.Username,
+                        "Joined team",
+                        team.Name,
+                        Context);
+
+                    // Refresh teams list
+                    BindTeams();
+                }
+                else
+                {
+                    lblPageMessage.Text = "❌ Could not join team. You may already be a member or the team is full.";
+                }
+            }
+            catch (Exception ex)
             {
-                lblPageMessage.Text = "This team is already full.";
-                return;
+                lblPageMessage.Text = "Error joining team: " + ex.Message;
             }
-
-            // Do not add membership yet: this is sample data.
-            lblPageMessage.Text =
-                "You selected " + Server.HtmlEncode(team.Name) +
-                ". Actual membership will be connected to the database later.";
         }
     }
 }
