@@ -9,6 +9,9 @@ namespace CyberArenaWebForms5
         {
             // Initialize the database on application startup
             DatabaseHelper.InitializeDatabase();
+
+            // Populate seed data if tables are empty
+            DatabaseHelper.PopulateSeedData();
         }
 
         protected void Application_End(object sender, EventArgs e)

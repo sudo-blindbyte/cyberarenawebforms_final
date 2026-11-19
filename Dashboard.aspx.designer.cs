@@ -114,6 +114,60 @@ namespace CyberArenaWebForms5
         protected global::System.Web.UI.WebControls.Label lblTeamHeading;
 
         /// <summary>
+        /// lnkViewTeams control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lnkViewTeams;
+
+        /// <summary>
+        /// btnLeaveTeam control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnLeaveTeam;
+
+        /// <summary>
+        /// pnlNoTeam control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlNoTeam;
+
+        /// <summary>
+        /// pnlTeamInfo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlTeamInfo;
+
+        /// <summary>
+        /// lblTeamTotal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblTeamTotal;
+
+        /// <summary>
+        /// lblTeamGain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblTeamGain;
+
+        /// <summary>
         /// rptMembers control.
         /// </summary>
         /// <remarks>
@@ -121,6 +175,15 @@ namespace CyberArenaWebForms5
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater rptMembers;
+
+        /// <summary>
+        /// lblTeamMessage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblTeamMessage;
 
         /// <summary>
         /// rptActivity control.

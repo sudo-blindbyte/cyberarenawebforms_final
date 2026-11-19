@@ -51,29 +51,8 @@ namespace CyberArenaWebForms5
             lblSolved.Text = solved.ToString();
             lblTotalChallenges.Text = total.ToString();
             lblRank.Text = "#24";
-
-            // Load user's actual team from database
-            string teamDisplayName = "Not Assigned";
-            List<AppUser> teamMembers = new List<AppUser>();
-
-            if (CurrentUser.TeamId.HasValue && CurrentUser.TeamId.Value > 0)
-            {
-                Team userTeam = TeamStore.FindById(CurrentUser.TeamId.Value);
-                if (userTeam != null)
-                {
-                    teamDisplayName = Server.HtmlEncode(userTeam.Name);
-                    lblTeamName.Text = teamDisplayName;
-                    lblTeamHeading.Text = teamDisplayName;
-
-                    // Load team members
-                    teamMembers = TeamStore.GetTeamMembers(userTeam.Id);
-                }
-            }
-            else
-            {
-                lblTeamName.Text = teamDisplayName;
-                lblTeamHeading.Text = teamDisplayName;
-            }
+            lblTeamName.Text = "RootAccess";
+            lblTeamHeading.Text = "RootAccess";
 
             var categories = new List<CategoryStat>
             {
@@ -89,36 +68,14 @@ namespace CyberArenaWebForms5
             lblDonutTotal.Text = categories.Sum(c => c.Solved).ToString();
             litDonut.Text = BuildDonutSvg(categories);
 
-            // Build member list from database or sample
-            if (teamMembers.Count > 0)
+            rptMembers.DataSource = new List<MemberInfo>
             {
-                var membersList = new List<MemberInfo>();
-                foreach (var member in teamMembers)
-                {
-                    membersList.Add(new MemberInfo
-                    {
-                        Name = member.FullName,
-                        Initials = member.Initials,
-                        Role = member.Role == "Admin" ? "Team Admin" : "Member",
-                        Points = member.Points,
-                        Color = member.AvatarCss
-                    });
-                }
-                rptMembers.DataSource = membersList;
-                rptMembers.DataBind();
-            }
-            else
-            {
-                // Sample data if no team assigned
-                rptMembers.DataSource = new List<MemberInfo>
-                {
-                    new MemberInfo { Name = "NullPointer", Initials = "NP", Role = "Team Captain", Points = 1850, Color = "bg-navy" },
-                    new MemberInfo { Name = "PacketGhost", Initials = "PG", Role = "Network analyst", Points = 1450, Color = "bg-green" },
-                    new MemberInfo { Name = "HexHunter",   Initials = "HH", Role = "Reverse engineer", Points = 750, Color = "bg-orange" },
-                    new MemberInfo { Name = "Participant", Initials = "P",  Role = "You", Points = 450, Color = "bg-purple" }
-                };
-                rptMembers.DataBind();
-            }
+                new MemberInfo { Name = "NullPointer", Initials = "NP", Role = "Team Captain", Points = 1850, Color = "bg-navy" },
+                new MemberInfo { Name = "PacketGhost", Initials = "PG", Role = "Network analyst", Points = 1450, Color = "bg-green" },
+                new MemberInfo { Name = "HexHunter",   Initials = "HH", Role = "Reverse engineer", Points = 750, Color = "bg-orange" },
+                new MemberInfo { Name = "Participant", Initials = "P",  Role = "You", Points = 450, Color = "bg-purple" }
+            };
+            rptMembers.DataBind();
 
             rptActivity.DataSource = new List<ActivityInfo>
             {

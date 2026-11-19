@@ -74,6 +74,7 @@
     <Content Include="App_Data\SetupDatabase.sql" />
     <Content Include="DatabaseCheck.aspx" />
     <Content Include="DatabaseDiagnostics.aspx" />
+    <Content Include="DataSeeding.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="ForgotPassword.aspx" />
     <Content Include="Global.asax" />
@@ -114,6 +115,13 @@
     </Compile>
     <Compile Include="DatabaseDiagnostics.aspx.designer.cs">
       <DependentUpon>DatabaseDiagnostics.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="DataSeeding.aspx.cs">
+      <DependentUpon>DataSeeding.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DataSeeding.aspx.designer.cs">
+      <DependentUpon>DataSeeding.aspx</DependentUpon>
     </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
